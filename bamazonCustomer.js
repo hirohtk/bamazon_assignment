@@ -9,7 +9,6 @@ var colors = require('colors');
 // CONTAINING AN OBJECT WHERE YOU *NEED* TO SPECIFY THE COLUMN NAME 
 // (WHICH IS A PROPERTY) TO CALL THE VALUE IN ORDER TO USE IT 
 
-
 var db = mysql.createConnection({
     host: "localhost",
 
@@ -114,7 +113,8 @@ function makePurchase() {
                         db.query("UPDATE products SET ? WHERE ?",
                             [
                                 {
-                                  stock_quantity: itemsLeft
+                                  stock_quantity: itemsLeft,
+                                  product_sales: totalPrice
                                 },
                                 {
                                   item_id: itemID
