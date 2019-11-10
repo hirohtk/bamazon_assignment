@@ -39,8 +39,6 @@ function start() {
     console.log("\n" + "Displaying all products...".green + "\n");
     db.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
-        // Log all results of the SELECT statement
-        //console.log(res);
 
         let itemNameArray = [];
         for (let i = 0; i < res.length; i++) {
@@ -48,7 +46,7 @@ function start() {
                 "Department name: ".yellow + res[i].department_name + " | ".yellow + "Price: ".yellow + "$" + res[i].price + " | ".yellow +
                 "Stock Quantity: ".yellow + res[i].stock_quantity);
             itemNameArray.push(res[i].product_name);
-            //itemPropertyArray.push(res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity)
+            
         }
         console.log("\n")
         inquirer.prompt({
@@ -82,7 +80,7 @@ function stockCheck() {
     db.query("SELECT stock_quantity FROM products WHERE product_name =" + "'" + itemChosen + "'", function (err, res) {
         if (err) throw err;
         itemsLeft = res[0].stock_quantity;
-        //console.log("There are " + itemsLeft + " units left");
+       
         if (itemsLeft < itemQuantityToBuy) {
             console.log("Insufficient quantity of " + itemChosen + "!");
             reset();
