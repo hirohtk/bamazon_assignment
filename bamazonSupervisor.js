@@ -17,7 +17,6 @@ var db = mysql.createConnection({
     database: "bamazon"
 });
 
-
 db.connect(function (err) {
     if (err) throw err;
     console.clear();
@@ -31,6 +30,7 @@ function reset() {
 
 function start() {
     console.log("Welcome to BAMAZON!".yellow + "   ***FOR SUPERVISORS***".blue);
+    console.log("Press CTRL + C to Exit at any time\n".red);
 
     inquirer.prompt({
         name: "firstselection",
@@ -52,7 +52,6 @@ function start() {
                 default:
                     console.log("This should never be triggered as long as things go right.");
             }
-
         });
 }
 
@@ -61,7 +60,6 @@ function viewSales() {
     let masterArrayForTable = [];
     //idea is to use this one to let sql populate individual variables in, as arrays.  basically doing inception with arrays here, man...
     let arrayForData = [];
-    let count = 0;
 
     db.query("SELECT departments.department_id, departments.department_name, departments.over_head_costs, SUM(products.product_sales) AS product_sales FROM departments JOIN products ON products.department_name = departments.department_name GROUP BY departments.department_name;", function (err, res) {
         if (err) throw err;
@@ -73,9 +71,8 @@ function viewSales() {
 
         for (let i = 0; i < res.length; i++) {
             //defining a new array for every row of data we're getting from SQL
-            arrayForData[i] = [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].product_sales, "test"]
+            arrayForData[i] = [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].product_sales, res[i].product_sales - res[i].over_head_costs];
             masterArrayForTable.push(arrayForData[i]);
-            count++;
         }
         // ***BELOW DIDN'T WORK - I WAS OVERCOMPLICATING THINGS.  DIDN'T REALIZE DATA TAKES IN AN ARRAY, NO REAL REASON TO DO THE BELOW, BUT IT DID TEACH ME ABOUT ARRAY.MAP METHOD.
 
@@ -119,11 +116,42 @@ function viewSales() {
             }
         }
     };
-
     output = table(data, config);
-
     console.log(output);
-
+    reset();
     });
     
+}
+
+function createDepartment() {
+    inquirer.prompt(
+        [{
+            name: "departmentname",
+            type: "input",
+            message: "Input name of new department to add:",
+        },
+        {
+            name: "departmentoverhead",
+            type: "input",
+            message: "Input overhead of this this new department:",
+            validate: function (value) {
+                if (isNaN(value) === false) {
+                    return true;
+                }
+                return false;
+            }
+        }
+        ],
+    )
+        .then(function (answer) {
+            let newDepartmentName = answer.departmentname;
+            let overhead = parseInt(answer.departmentoverhead);
+
+            db.query("INSERT INTO departments (department_name, over_head_costs) VALUES ('" + newDepartmentName + "','" +  overhead + "')",
+            function (err, res) {
+                if (err) throw err;
+                console.log("\nSuccess!  Added " + newDepartmentName + " as a new department with overhead of $" + overhead +".");           
+            });
+            reset();
+        });
 }
