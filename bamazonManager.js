@@ -77,10 +77,10 @@ function viewProducts() {
 }
 
 function viewLowInventory() {
-    db.query("SELECT * FROM products WHERE ?",
-        [
-            { stock_quantity: "<=5" }
-        ],
+    db.query("SELECT * FROM products WHERE stock_quantity <= 5",
+        // [
+        //     { stock_quantity: "<=5" }
+        // ],
         function (err, res) {
             if (err) throw err;
             if (res.length === 0) {
