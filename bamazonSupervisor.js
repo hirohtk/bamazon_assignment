@@ -57,9 +57,11 @@ function start() {
 }
 
 function viewSales() {
-    let departmentIDArray = [];
-        let departmentNameArray = [];
-        let overHeadCostsArray = [];
+    //idea is to use this one to let table's data variable know how many subarrays it needs to print
+    let masterArrayForTable = [];
+    //idea is to use this one to let sql populate individual variables in, as arrays.  basically doing inception with arrays here, man...
+    let arrayForData = [];
+
     db.query("SELECT departments.department_id, departments.department_name, departments.over_head_costs, SUM(products.product_sales) AS product_sales FROM departments JOIN products ON products.department_name = departments.department_name GROUP BY departments.department_name;", function (err, res) {
         if (err) throw err;
         
@@ -67,16 +69,26 @@ function viewSales() {
             console.log(res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].product_sales)
         }
 
+        //  Needed to fill in NPM table package table dynamically.  found this helped:  https://stackoverflow.com/questions/6645067/javascript-dynamically-creating-variables-for-loops
+        //  Strategy was to create an array for every row of data needed.  Thought I could create new varibles, but instead make new arrays this way to store in a master array
+
+        for (let i = 0; i < res.length; i++) {
+            arrayForData[i] = [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].product_sales, "test"]
+            masterArrayForTable.push(arrayForData[i]);
+        }
+        // just need a method that can list each sub array separated by a comma ,
+        // then store that in an object, then can use that in data below. 
         let config,
         data,
         output;
     data = [
         ['department_id', 'department_name', 'over_head_costs', "product_sales", "total_profit"],
-        [res[0].department_id, "'" + res[0].department_name + "'", "'" + res[0].over_head_costs + "'", "'" + res[0].over_head_costs + "'", "calculated in js"],
-        [departmentIDArray[1], departmentNameArray[1], overHeadCostsArray[1], "from products table", "calcualted in js"],
-        [departmentIDArray[2], departmentNameArray[2], overHeadCostsArray[2], "from products table", "calcualted in js"],
-        [departmentIDArray[3], departmentNameArray[3], overHeadCostsArray[3], "from products table", "calcualted in js"],
-        [departmentIDArray[4], departmentNameArray[4], overHeadCostsArray[4], "from products table", "calcualted in js"],
+        
+        arrayForData[0],
+        arrayForData[1],
+        arrayForData[2],
+        arrayForData[3],
+        ["d", "s", "t", "from products table", "calcualted in js"],
     ];
     config = {
         columns: {
