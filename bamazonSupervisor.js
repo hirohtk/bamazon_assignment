@@ -57,39 +57,44 @@ function start() {
 }
 
 function viewSales() {
-    //idea is to use this one to let table's data variable know how many subarrays it needs to print
+    //idea is to use this one to let table's data variable use it (table's data variable takes an array)
     let masterArrayForTable = [];
     //idea is to use this one to let sql populate individual variables in, as arrays.  basically doing inception with arrays here, man...
     let arrayForData = [];
+    let count = 0;
 
     db.query("SELECT departments.department_id, departments.department_name, departments.over_head_costs, SUM(products.product_sales) AS product_sales FROM departments JOIN products ON products.department_name = departments.department_name GROUP BY departments.department_name;", function (err, res) {
         if (err) throw err;
-        
-        for (let i = 0; i < res.length; i++) {
-            console.log(res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].product_sales)
-        }
 
         //  Needed to fill in NPM table package table dynamically.  found this helped:  https://stackoverflow.com/questions/6645067/javascript-dynamically-creating-variables-for-loops
         //  Strategy was to create an array for every row of data needed.  Thought I could create new varibles, but instead make new arrays this way to store in a master array
 
+        masterArrayForTable.push(['department_id', 'department_name', 'over_head_costs', "product_sales", "total_profit"]);
+
         for (let i = 0; i < res.length; i++) {
+            //defining a new array for every row of data we're getting from SQL
             arrayForData[i] = [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].product_sales, "test"]
             masterArrayForTable.push(arrayForData[i]);
+            count++;
         }
+        // ***BELOW DIDN'T WORK - I WAS OVERCOMPLICATING THINGS.  DIDN'T REALIZE DATA TAKES IN AN ARRAY, NO REAL REASON TO DO THE BELOW, BUT IT DID TEACH ME ABOUT ARRAY.MAP METHOD.
+
         // just need a method that can list each sub array separated by a comma ,
         // then store that in an object, then can use that in data below. 
+        // I think array.map will work.  Model is as follows from here https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
+        // var array1 = [[1,2,3], [4,5,6], [7,8,9] , [10,11,12]];
+        // const map1 = array1.map(x => x+",");
+        // console.log(map1);
+        //console.log(masterArrayForTable);
+        //const theThingGoingIntoDataForNPMTable = masterArrayForTable.map(x => "["+ x + "]" +",");
+        //console.log(theThingGoingIntoDataForNPMTable);
+
+        // ***SEE ABOVE
+
         let config,
         data,
         output;
-    data = [
-        ['department_id', 'department_name', 'over_head_costs', "product_sales", "total_profit"],
-        
-        arrayForData[0],
-        arrayForData[1],
-        arrayForData[2],
-        arrayForData[3],
-        ["d", "s", "t", "from products table", "calcualted in js"],
-    ];
+    data = masterArrayForTable;
     config = {
         columns: {
             0: {
