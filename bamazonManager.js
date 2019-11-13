@@ -170,6 +170,16 @@ function addToInventory() {
 }
 
 function addNewProduct() {
+    //SELECT department_name FROM products  GROUP BY department_name;
+    let departmentArray = [];
+    db.query("SELECT department_name FROM products  GROUP BY department_name",
+            function (err, res) {
+                if (err) throw err;
+                for (let i = 0; i < res.length; i++) {
+                    departmentArray.push(res[i].department_name);
+                }
+    });
+            
     inquirer.prompt(
         [{
             name: "itemname",
@@ -178,8 +188,9 @@ function addNewProduct() {
         },
         {
             name: "itemdepartment",
-            type: "input",
-            message: "Input department to add this item to:",
+            type: "list",
+            message: "Select department to add item to:",
+            choices: departmentArray
         },
         {
             name: "itemprice",
@@ -221,6 +232,7 @@ function addNewProduct() {
                 viewProducts();
             });
         });
+    
 }
 
 // "INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES (?)",
