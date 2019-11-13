@@ -29,7 +29,7 @@ function reset() {
 
 function start() {
     console.log("Welcome to BAMAZON!".yellow + "   ***FOR MANAGERS***".red);
-
+    console.log("Press CTRL + C to Exit at any time".red);
     inquirer.prompt({
         name: "firstselection",
         type: "list",

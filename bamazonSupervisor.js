@@ -60,29 +60,30 @@ function viewSales() {
     let departmentIDArray = [];
         let departmentNameArray = [];
         let overHeadCostsArray = [];
-    db.query("SELECT * FROM departments", function (err, res) {
+    db.query("SELECT departments.department_id, departments.department_name, departments.over_head_costs, SUM(products.product_sales) AS product_sales FROM departments JOIN products ON products.department_name = departments.department_name GROUP BY departments.department_name;", function (err, res) {
         if (err) throw err;
         
-        for (let i = 0; i < res.length; i++) {
-            console.log(res[i].department_id + " " + res[i].department_name + " " + res[i].over_head_costs);
-            departmentIDArray.push(res[i].department_id);
-            departmentNameArray.push(res[i].department_name);
-            overHeadCostsArray.push(res[i].over_head_costs);
-        }
-        console.log(departmentIDArray);
-        console.log(departmentIDArray[3]);
-        console.log(departmentNameArray[2]);
-        console.log(overHeadCostsArray);
+        console.log(res);
+        // for (let i = 0; i < res.length; i++) {
+        //     console.log(res[i].department_id + " " + res[i].department_name + " " + res[i].over_head_costs);
+        //     departmentIDArray.push(res[i].department_id);
+        //     departmentNameArray.push(res[i].department_name);
+        //     overHeadCostsArray.push(res[i].over_head_costs);
+        // }
+        // console.log(departmentIDArray);
+        // console.log(departmentIDArray[3]);
+        // console.log(departmentNameArray[2]);
+        // console.log(overHeadCostsArray);
 
     });
     let config,
         data,
         output;
     data = [
-        // the below actually may need to be the result of a join lol... shoot
+        // the below actually may need to be the result of a join?
         ['department_id', 'department_name', 'over_head_costs', "product_sales", "total_profit"],
         // if I can join the two tables and get an array, I can just put the array below to auto fill the row, I think
-        ["'" + departmentIDArray[0] + "'", departmentNameArray[0], overHeadCostsArray[0], "from products table", "calculated in js"],
+        ["'" + departmentIDArray[0] + "'", "test", overHeadCostsArray[0], "from products table", "calculated in js"],
         [departmentIDArray[1], departmentNameArray[1], overHeadCostsArray[1], "from products table", "calcualted in js"],
         [departmentIDArray[2], departmentNameArray[2], overHeadCostsArray[2], "from products table", "calcualted in js"],
         [departmentIDArray[3], departmentNameArray[3], overHeadCostsArray[3], "from products table", "calcualted in js"],

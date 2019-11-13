@@ -35,6 +35,7 @@ let totalPrice;
 function start() {
     console.clear();
     console.log("Welcome to BAMAZON!".yellow);
+    console.log("Press CTRL + C to Exit at any time".red);
     console.log("\n" + "Displaying all products...".green + "\n");
     db.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
