@@ -1,5 +1,7 @@
 # bamazon_assignment
 
+Links for a walkthrough the assignemnt:  https://drive.google.com/file/d/1KYaY_zQTFGgR_Zya8wFI-D3NweHIrvT7/view https://drive.google.com/file/d/1gNlV1z40NvZZ6fzRgPuYvt7ND24tqCGC/view
+
 In this assignment, there are three apps that have been created which are executed in NodeJS.  
 
 Node packages used for this assignment are:
